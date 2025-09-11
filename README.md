@@ -1,6 +1,6 @@
 ![UI5 logo](/docs/images/UI5_logo_wide.png)
-[![CI](https://github.com/SAP-samples/ui5-webcomponents-sample-angular/actions/workflows/ci.yaml/badge.svg)](https://github.com/SAP-samples/ui5-webcomponents-sample-angular/actions/workflows/ci.yaml)
-[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/ui5-webcomponents-sample-angular)](https://api.reuse.software/info/github.com/SAP-samples/ui5-webcomponents-sample-angular)
+[![CI](https://github.com/UI5/sample-webcomponents-angular/actions/workflows/ci.yaml/badge.svg)](https://github.com/UI5/sample-webcomponents-angular/actions/workflows/ci.yaml)
+[![REUSE status](https://api.reuse.software/badge/github.com/UI5/sample-webcomponents-angular)](https://api.reuse.software/info/github.com/UI5/sample-webcomponents-angular)
 
 # UI5 Web Components Angular Sample Application
 
@@ -14,8 +14,8 @@ This project was bootstrapped with [Angular CLI](https://cli.angular.io/).
 ## Getting started
 1. [Clone this repository](https://help.github.com/articles/cloning-a-repository/) using the [GitHub Command line tool](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and navigate into the downloaded directory.
     ```sh
-    git clone https://github.com/SAP-samples/ui5-webcomponents-sample-angular.git
-    cd ui5-webcomponents-sample-angular
+    git clone https://github.com/UI5/sample-webcomponents-angular.git
+    cd sample-webcomponents-angular
     ```
 1. Install all dependencies
     ```sh

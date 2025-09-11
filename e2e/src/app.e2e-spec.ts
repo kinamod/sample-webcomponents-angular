@@ -9,6 +9,6 @@ describe('workspace-project App', () => {
 
 	it('should display welcome message', () => {
 		page.navigateTo();
-		expect(page.getTitleText()).toEqual('Welcome to ui5-webcomponents-sample-angular!');
+		expect(page.getTitleText()).toEqual('Welcome to UI5/sample-webcomponents-angular!');
 	});
 });
