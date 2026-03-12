@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 
 interface Todo {
   text: string;
@@ -20,6 +20,8 @@ export class CalendarComponent implements OnInit, OnChanges {
   tasksForSelectedDate: Todo[] = [];
   upcomingTasks: Todo[] = [];
   selectedTask: Todo | null = null;
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.updateUpcomingTasks();
@@ -77,19 +79,32 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   handleDateSelect(event: any) {
-    const selectedDate = event.detail.dates[0];
+    console.log('Calendar date selected event:', event);
+
+    // Clear any previous task selection immediately
+    this.selectedTask = null;
+
+    // Get the selected date from the calendar
+    const selectedDate = event.detail?.dates?.[0] || event.detail?.date;
+
+    if (!selectedDate) {
+      console.warn('No date found in event');
+      return;
+    }
+
     this.selectedDate = this.convertFromCalendarDate(selectedDate);
 
-    // Find tasks for this date
+    // Find all tasks for this date (both complete and incomplete)
     this.tasksForSelectedDate = this.todos.filter(todo =>
       todo.deadline === this.selectedDate
     );
 
-    // Clear task selection when a new date is selected
-    this.selectedTask = null;
+    console.log('✓ Date selected:', this.selectedDate);
+    console.log('✓ Showing', this.tasksForSelectedDate.length, 'task(s) for this date');
+    console.log('✓ Selected task cleared');
 
-    console.log('Date selected:', this.selectedDate);
-    console.log('Tasks for this date:', this.tasksForSelectedDate);
+    // Force change detection to ensure UI updates
+    this.cdr.detectChanges();
   }
 
   getUpcomingTasks(): Todo[] {
@@ -148,8 +163,12 @@ export class CalendarComponent implements OnInit, OnChanges {
         // Optionally set the selected task for highlighting
         this.selectedTask = task;
 
-        console.log('Selected date:', this.selectedDate);
-        console.log('Tasks for date:', this.tasksForSelectedDate);
+        console.log('✓ Task selected:', task.text);
+        console.log('✓ Date set to:', this.selectedDate);
+        console.log('✓ Showing', this.tasksForSelectedDate.length, 'task(s) for this date');
+
+        // Force change detection
+        this.cdr.detectChanges();
       }
     }
   }
@@ -163,5 +182,10 @@ export class CalendarComponent implements OnInit, OnChanges {
     if (this.calendar?.nativeElement) {
       this.calendar.nativeElement.selectedDates = [];
     }
+
+    console.log('✓ Selection cleared');
+
+    // Force change detection
+    this.cdr.detectChanges();
   }
 }
