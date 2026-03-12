@@ -69,30 +69,72 @@ export class CalendarComponent implements OnInit, OnChanges {
     return '';
   }
 
-  convertFromCalendarDate(calendarDate: string): string {
-    // Convert from yyyy-MM-dd to dd/MM/yyyy
-    const parts = calendarDate.split('-');
-    if (parts.length === 3) {
-      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  convertFromCalendarDate(calendarDate: any): string {
+    // Handle different input types
+    if (!calendarDate) return '';
+
+    // If it's a timestamp (number), convert to date
+    if (typeof calendarDate === 'number') {
+      const date = new Date(calendarDate * 1000); // Unix timestamp in seconds
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
     }
+
+    // If it's a Date object
+    if (calendarDate instanceof Date) {
+      const day = String(calendarDate.getDate()).padStart(2, '0');
+      const month = String(calendarDate.getMonth() + 1).padStart(2, '0');
+      const year = calendarDate.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+
+    // If it's already a string
+    if (typeof calendarDate === 'string') {
+      // Handle yyyy-MM-dd format
+      const parts = calendarDate.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      // Already in correct format or other format
+      return calendarDate;
+    }
+
     return '';
   }
 
   handleDateSelect(event: any) {
     console.log('Calendar date selected event:', event);
+    console.log('Event detail:', event.detail);
 
     // Clear any previous task selection immediately
     this.selectedTask = null;
 
-    // Get the selected date from the calendar
-    const selectedDate = event.detail?.dates?.[0] || event.detail?.date;
+    // Get the selected date from the calendar - try multiple properties
+    let selectedDate = event.detail?.dates?.[0]
+                    || event.detail?.date
+                    || event.detail?.timestamp
+                    || event.detail?.value;
+
+    // If dates array exists but is empty, might be in values
+    if (!selectedDate && event.detail?.values && event.detail.values.length > 0) {
+      selectedDate = event.detail.values[0];
+    }
 
     if (!selectedDate) {
-      console.warn('No date found in event');
+      console.warn('No date found in event. Event detail:', event.detail);
       return;
     }
 
+    console.log('Raw selected date value:', selectedDate, 'Type:', typeof selectedDate);
+
     this.selectedDate = this.convertFromCalendarDate(selectedDate);
+
+    if (!this.selectedDate) {
+      console.warn('Failed to convert date:', selectedDate);
+      return;
+    }
 
     // Find all tasks for this date (both complete and incomplete)
     this.tasksForSelectedDate = this.todos.filter(todo =>
