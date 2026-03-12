@@ -7,8 +7,8 @@
   ],
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --extra-webpack-config webpack.partial.js",
-    "build": "ng build --extra-webpack-config webpack.partial.js",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider ng serve --extra-webpack-config webpack.partial.js",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider ng build --extra-webpack-config webpack.partial.js",
     "test": "ng test",
     "lint": "ng lint",
     "lint:commit": "commitlint -e",
