@@ -1,0 +1,73 @@
+---
+description: Enforce exclusive use of UI5 web components
+globs:
+  - "**/*.component.html"
+  - "**/*.html"
+alwaysApply: true
+---
+
+# UI5 Components Only
+
+All UI elements MUST use UI5 web components. This project uses SAP UI5 Design System exclusively.
+
+## Required Patterns
+
+✅ **Use ui5-* tags for all interactive UI elements:**
+- Buttons: `<ui5-button>`
+- Inputs: `<ui5-input>`, `<ui5-textarea>`, `<ui5-date-picker>`
+- Dialogs: `<ui5-dialog>`, `<ui5-popover>`
+- Lists: `<ui5-list>`, `<ui5-table>`
+- Navigation: `<ui5-shellbar>`, `<ui5-side-navigation>`
+
+✅ **Allowed non-UI5 elements:**
+- Standard HTML for layout: `<div>`, `<span>`, `<p>`, `<section>`
+- Angular directives: `*ngFor`, `*ngIf`, `*ngSwitch`
+- Custom app components: `<app-*>` (must internally use UI5)
+
+## Forbidden Patterns
+
+❌ **NEVER use other UI frameworks:**
+- Angular Material: `<mat-button>`, `<mat-form-field>`, etc.
+- Bootstrap components: `<ngb-*>`
+- Other component libraries
+
+❌ **NEVER create custom UI controls without UI5:**
+- Don't build custom buttons, inputs, or dialogs
+- Don't use plain `<button>` or `<input>` for user interaction
+
+## Examples
+
+### Correct Usage
+
+<!-- Buttons -->
+<ui5-button design="Emphasized">Submit</ui5-button>
+
+<!-- Forms -->
+<ui5-input placeholder="Enter name"></ui5-input>
+<ui5-date-picker format-pattern="dd/MM/yyyy"></ui5-date-picker>
+
+<!-- Dialogs -->
+<ui5-dialog header-text="Confirm Action">
+  <ui5-label>Are you sure?</ui5-label>
+  <ui5-button slot="footer">Cancel</ui5-button>
+  <ui5-button slot="footer" design="Emphasized">Confirm</ui5-button>
+</ui5-dialog>
+```
+
+### Incorrect Usage
+```html
+<!-- ❌ Angular Material -->
+<button mat-raised-button color="primary">Submit</button>
+<mat-form-field>
+  <input matInput placeholder="Enter name">
+</mat-form-field>
+
+<!-- ❌ Plain HTML for interaction -->
+<button class="btn btn-primary">Submit</button>
+<input type="text" placeholder="Enter name">
+```
+
+## UI5 Component Packages
+- `@ui5/webcomponents` - Main components (Button, Input, Dialog, etc.)
+- `@ui5/webcomponents-fiori` - Fiori components (ShellBar, etc.)
+- `@ui5/webcomponents-icons` - Icon library

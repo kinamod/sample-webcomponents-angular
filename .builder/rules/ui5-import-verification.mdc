@@ -1,0 +1,85 @@
+---
+description: Verify all UI5 components are properly imported
+globs:
+  - "**/app.module.ts"
+  - "**/*.component.ts"
+alwaysApply: true
+---
+
+# UI5 Component Import Verification
+
+All UI5 components used in templates MUST be imported in `app.module.ts`.
+
+## Required Import Pattern
+
+✅ **Import each component from dist path:**
+
+// app.module.ts
+import '@ui5/webcomponents/dist/Button';
+import '@ui5/webcomponents/dist/Input';
+import '@ui5/webcomponents/dist/Dialog';
+import '@ui5/webcomponents/dist/List';
+import '@ui5/webcomponents/dist/Panel';
+
+// Fiori components
+import '@ui5/webcomponents-fiori/dist/ShellBar';
+import '@ui5/webcomponents-fiori/dist/ShellBarItem';
+
+// Icons (individual icon files)
+import '@ui5/webcomponents-icons/dist/palette.js';
+import '@ui5/webcomponents-icons/dist/settings.js';
+
+// Required features
+import '@ui5/webcomponents-base/dist/features/F6Navigation';
+```
+
+## Module Configuration
+
+✅ **Add CUSTOM_ELEMENTS_SCHEMA:**
+```typescript
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+
+@NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+})
+export class AppModule { }
+```
+
+## Forbidden Patterns
+
+❌ **Don't use components without importing:**
+```html
+<!-- Template uses ui5-button -->
+<ui5-button>Click</ui5-button>
+
+<!-- But app.module.ts has no import! -->
+```
+
+❌ **Don't import entire packages:**
+```typescript
+// ❌ Wrong - causes bundle bloat
+import '@ui5/webcomponents';
+
+// ✅ Correct - import only what you need
+import '@ui5/webcomponents/dist/Button';
+```
+
+## Import Checklist
+
+Before using any ui5-* component in a template:
+
+1. ✅ Import from correct package path
+2. ✅ Use `/dist/ComponentName` format
+3. ✅ Import icons with `.js` extension
+4. ✅ Import Fiori components from `@ui5/webcomponents-fiori`
+5. ✅ Verify CUSTOM_ELEMENTS_SCHEMA is in module
+
+## Component Import Reference
+
+| Component Tag | Import Statement |
+|--------------|------------------|
+| ui5-button | `import '@ui5/webcomponents/dist/Button';` |
+| ui5-input | `import '@ui5/webcomponents/dist/Input';` |
+| ui5-dialog | `import '@ui5/webcomponents/dist/Dialog';` |
+| ui5-shellbar | `import '@ui5/webcomponents-fiori/dist/ShellBar';` |
+| ui5-icon | `import '@ui5/webcomponents/dist/Icon';` + icon file |

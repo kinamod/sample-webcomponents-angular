@@ -1,0 +1,197 @@
+# Builder.io Rules - UI5 Design System
+
+This project exclusively uses SAP UI5 Web Components. All AI-generated code and human contributions must follow these principles.
+
+## Core Principles
+
+### 1. UI5 Components First
+**Always use UI5 web components for any user interface element.**
+
+- ✅ Use `<ui5-button>`, `<ui5-input>`, `<ui5-dialog>`, etc.
+- ❌ Never use other UI frameworks (Angular Material, Bootstrap, etc.)
+- ❌ Never use plain HTML elements for interactive UI (`<button>`, `<input>`, etc.)
+
+**Decision Tree for UI Components:**
+1. Is there a UI5 component for this? → Use it
+2. Can multiple UI5 components be combined? → Combine them
+3. Is this purely layout/structure? → Use semantic HTML (`<div>`, `<section>`, etc.)
+4. Still no solution? → Ask for guidance before creating custom components
+
+### 2. Import Verification
+**Every UI5 component used in templates must be imported in `app.module.ts`.**
+
+- Import individual components from dist paths: `import '@ui5/webcomponents/dist/Button';`
+- Import Fiori components from: `import '@ui5/webcomponents-fiori/dist/ShellBar';`
+- Import icons individually: `import '@ui5/webcomponents-icons/dist/palette.js';`
+- Never import entire packages (causes bundle bloat)
+
+### 3. Angular Integration
+**Use Angular best practices when integrating UI5 components.**
+
+- Add `CUSTOM_ELEMENTS_SCHEMA` to `@NgModule` schemas
+- Use `@ViewChild` with `ElementRef` to access UI5 component instances
+- UI5 events use `event.detail` for custom data
+- Access properties/methods via `nativeElement`: `this.button.nativeElement.show()`
+
+### 4. Theme Consistency
+**Maintain consistent UI5 theming throughout the application.**
+
+- Set theme using `setTheme('sap_horizon')` in `app.module.ts`
+- Configure `xx-wc-no-conflict` in `index.html` to prevent event conflicts
+- Use valid UI5 theme names only (sap_horizon, sap_fiori_3, etc.)
+
+### 5. Styling with UI5 Design Tokens
+**Leverage UI5's built-in design system rather than custom CSS.**
+
+- Use UI5 component properties for styling: `design="Emphasized"`, `state="Success"`
+- Use CSS variables from UI5 theme when custom styling is needed
+- Avoid overriding UI5 component internal styles
+- Keep custom CSS minimal and focused on layout/spacing
+
+## Operating Principles
+
+### Code Quality
+- **Simplicity**: Don't over-engineer. Use the simplest UI5 component that solves the problem
+- **Consistency**: All similar UI patterns should use the same UI5 components
+- **Accessibility**: UI5 components have built-in accessibility - leverage it
+- **Performance**: Import only components you use to minimize bundle size
+
+### TypeScript Safety
+- Use proper types when accessing UI5 components via `ElementRef`
+- Define interfaces for UI5 event detail objects when needed
+- Avoid `any` types - use specific types or create them
+
+### Testing Baseline
+- Test UI5 component integration in Angular components
+- Verify event handlers work correctly with UI5's event system
+- Test responsive behavior of UI5 components
+
+### Documentation
+- Comment complex UI5 component configurations
+- Document custom event handlers that use `event.detail`
+- Link to official UI5 docs when using advanced component features
+
+## Common Patterns
+
+### Form Inputs
+
+<ui5-input 
+  placeholder="Enter value"
+  (input)="onInput($event)">
+</ui5-input>
+```
+
+```typescript
+onInput(event: any) {
+  const value = event.target.value;
+  // Process input
+}
+```
+
+### Dialogs and Popovers
+```html
+<ui5-dialog #myDialog header-text="Title">
+  <ui5-label>Content</ui5-label>
+  <ui5-button slot="footer" (click)="myDialog.close()">Close</ui5-button>
+</ui5-dialog>
+```
+
+```typescript
+@ViewChild('myDialog') dialog: ElementRef;
+
+openDialog() {
+  this.dialog.nativeElement.show();
+}
+```
+
+### Lists with Items
+```html
+<ui5-list>
+  <ui5-li *ngFor="let item of items">{{ item.name }}</ui5-li>
+</ui5-list>
+```
+
+### ShellBar Navigation
+```html
+<ui5-shellbar
+  primary-title="My App"
+  (profile-click)="onProfileClick($event)">
+  <ui5-shellbar-item text="Settings" icon="settings"></ui5-shellbar-item>
+</ui5-shellbar>
+```
+
+## Anti-Patterns to Avoid
+
+### ❌ Mixing UI Frameworks
+```html
+<!-- WRONG: Don't mix UI5 with Material or other frameworks -->
+<ui5-button>UI5 Button</ui5-button>
+<button mat-button>Material Button</button>
+```
+
+### ❌ Using Plain HTML Interactive Elements
+```html
+<!-- WRONG: Don't use plain buttons/inputs -->
+<button onclick="doSomething()">Click</button>
+<input type="text" placeholder="Name">
+
+<!-- RIGHT: Use UI5 components -->
+<ui5-button (click)="doSomething()">Click</ui5-button>
+<ui5-input placeholder="Name"></ui5-input>
+```
+
+### ❌ Importing Entire Packages
+```typescript
+// WRONG: Imports all components
+import '@ui5/webcomponents';
+
+// RIGHT: Import only what you need
+import '@ui5/webcomponents/dist/Button';
+import '@ui5/webcomponents/dist/Input';
+```
+
+### ❌ Missing CUSTOM_ELEMENTS_SCHEMA
+```typescript
+// WRONG: No schema for custom elements
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule]
+})
+
+// RIGHT: Include schema
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+})
+```
+
+## Resources
+
+- **Component Documentation**: https://ui5.github.io/webcomponents/
+- **Design Guidelines**: https://www.sap.com/design-system/fiori-design-web/
+- **Icon Explorer**: https://ui5.github.io/webcomponents/icons/
+- **GitHub Repository**: https://github.com/SAP/ui5-webcomponents
+
+## AI Assistant Instructions
+
+When generating code for this project:
+
+1. **Always check** if a UI5 component exists before creating custom UI
+2. **Always import** UI5 components in `app.module.ts` before using them
+3. **Always use** `CUSTOM_ELEMENTS_SCHEMA` in Angular modules
+4. **Prefer** UI5 component properties over custom CSS
+5. **Document** any advanced UI5 component usage with comments
+6. **Test** event handling with UI5's `event.detail` pattern
+7. **Reference** the component index rule for available components
+8. **Validate** that all templates only use UI5 components or semantic HTML
+
+## Enforcement
+
+These rules are enforced through:
+- `.builder/rules/ui5-components-only.mdc` - Component usage rules
+- `.builder/rules/ui5-import-verification.mdc` - Import validation
+- `.builder/rules/ui5-theme-consistency.mdc` - Theme configuration
+- `.builder/rules/ui5-component-index.mdc` - Component registry
+
+All code changes should be validated against these rules before being considered complete.
