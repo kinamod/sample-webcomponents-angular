@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
 	dialogDate: string;
 
 	title = 'app';
-	activeTab = 'todos';
+	activeTab = 'analytics';
 	todos: Array<Todo> = [];
 	id = 0;
 	done = [];
