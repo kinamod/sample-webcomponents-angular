@@ -1,0 +1,40 @@
+<div class="kpi-summary">
+  <ui5-card class="kpi-card">
+    <div class="kpi-card-content">
+      <ui5-title level="H5" class="kpi-title">Latest Index</ui5-title>
+      <div class="kpi-value">{{kpiData.latestValue | number:'1.1-1'}}</div>
+      <ui5-label class="kpi-period">{{kpiData.latestPeriod}}</ui5-label>
+      <ui5-label class="kpi-baseline">(2019=100 baseline)</ui5-label>
+    </div>
+  </ui5-card>
+
+  <ui5-card class="kpi-card">
+    <div class="kpi-card-content">
+      <ui5-title level="H5" class="kpi-title">vs Previous Period</ui5-title>
+      <div class="kpi-value" [class]="getTrendClass(kpiData.periodChange)">
+        <ui5-icon 
+          *ngIf="kpiData.periodChange !== null" 
+          [name]="getTrendIcon(kpiData.periodChange)"
+          class="trend-icon">
+        </ui5-icon>
+        {{formatChange(kpiData.periodChange)}}
+      </div>
+      <ui5-label class="kpi-description">Month-on-month change</ui5-label>
+    </div>
+  </ui5-card>
+
+  <ui5-card class="kpi-card">
+    <div class="kpi-card-content">
+      <ui5-title level="H5" class="kpi-title">vs Last Year</ui5-title>
+      <div class="kpi-value" [class]="getTrendClass(kpiData.yoyChange)">
+        <ui5-icon 
+          *ngIf="kpiData.yoyChange !== null" 
+          [name]="getTrendIcon(kpiData.yoyChange)"
+          class="trend-icon">
+        </ui5-icon>
+        {{formatChange(kpiData.yoyChange)}}
+      </div>
+      <ui5-label class="kpi-description">Year-over-year change</ui5-label>
+    </div>
+  </ui5-card>
+</div>

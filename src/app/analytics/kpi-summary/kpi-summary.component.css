@@ -1,0 +1,72 @@
+.kpi-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.kpi-card {
+  min-height: 180px;
+}
+
+.kpi-card-content {
+  padding: 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.kpi-title {
+  margin-bottom: 0.5rem;
+  color: var(--sapTextColor, #32363a);
+}
+
+.kpi-value {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.kpi-value.positive {
+  color: var(--sapPositiveColor, #107e3e);
+}
+
+.kpi-value.negative {
+  color: var(--sapNegativeColor, #b00);
+}
+
+.kpi-value.neutral {
+  color: var(--sapNeutralColor, #788fa6);
+}
+
+.trend-icon {
+  font-size: 2rem;
+}
+
+.kpi-period {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--sapTextColor, #32363a);
+}
+
+.kpi-baseline,
+.kpi-description {
+  font-size: 0.875rem;
+  color: var(--sapContent_LabelColor, #6a6d70);
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .kpi-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-value {
+    font-size: 2rem;
+  }
+}

@@ -1,0 +1,27 @@
+<ui5-panel 
+  header-text="Filters" 
+  [collapsed]="collapsed"
+  (toggle)="toggleCollapsed()"
+  class="filters-panel">
+  
+  <div class="filters-content">
+    <div class="filter-grid">
+      <div class="filter-group" *ngFor="let dimension of dimensions">
+        <ui5-label class="filter-label">{{dimension.label || dimension.name}}:</ui5-label>
+        <ui5-select (change)="onFilterChange(dimension.name, $event)">
+          <ui5-option 
+            *ngFor="let option of dimension.options; let i = index" 
+            [value]="option.value"
+            [selected]="i === 0">
+            {{option.label}}
+          </ui5-option>
+        </ui5-select>
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <ui5-button design="Emphasized" (click)="applyFilters()">Apply Filters</ui5-button>
+      <ui5-button design="Transparent" (click)="resetFilters()">Reset</ui5-button>
+    </div>
+  </div>
+</ui5-panel>

@@ -29,6 +29,10 @@
 	<div *ngIf="activeTab === 'calendar'">
 		<app-calendar [todos]="todos"></app-calendar>
 	</div>
+
+	<div *ngIf="activeTab === 'analytics'">
+		<app-analytics></app-analytics>
+	</div>
 </section>
 
 <aside>
