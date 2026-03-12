@@ -19,7 +19,7 @@ This project was bootstrapped with [Angular CLI](https://cli.angular.io/).
     ```
 1. Install all dependencies
     ```sh
-    npm install
+    npm install --legacy-peer-deps
     ```
 
 1. Start a local server and run the application. (The running application can be found here:  http://localhost:4200)
