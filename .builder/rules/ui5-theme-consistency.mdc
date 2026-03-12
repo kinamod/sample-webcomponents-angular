@@ -8,32 +8,17 @@ alwaysApply: true
 
 # UI5 Theme Configuration
 
-UI5 theme MUST be properly configured in app.module.ts and index.html.
+## app.module.ts
 
-## Required Theme Setup
-
-✅ **Initialize theme in app.module.ts:**
+**Set theme:**
 
 import { setTheme } from '@ui5/webcomponents-base/dist/config/Theme';
+setTheme('sap_horizon'); // or sap_horizon_dark, sap_fiori_3, etc.
+```
 
-// Set theme on module initialization
-setTheme('sap_horizon');
+## index.html
 
-
-✅ **Valid theme names:**
-- `sap_horizon` (default, recommended)
-- `sap_horizon_dark`
-- `sap_horizon_hcb` (high contrast black)
-- `sap_horizon_hcw` (high contrast white)
-- `sap_fiori_3`
-- `sap_fiori_3_dark`
-- `sap_belize`
-- `sap_belize_hcb`
-- `sap_belize_hcw`
-
-## Event Handling Configuration
-
-✅ **Configure xx-wc-no-conflict in index.html:**
+**Prevent event conflicts:**
 ```html
 <script data-id="sap-ui-config" type="application/json">
 {
@@ -44,88 +29,7 @@ setTheme('sap_horizon');
 </script>
 ```
 
-This prevents conflicts between Angular events and UI5 component events.
-
-## Angular Module Schema
-
-✅ **Add CUSTOM_ELEMENTS_SCHEMA:**
-```typescript
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-
-@NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],  // Required for UI5 custom elements
-  bootstrap: [AppComponent]
-})
-export class AppModule { }
-```
-
-## Complete Setup Example
-
-```typescript
-// app.module.ts
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { setTheme } from '@ui5/webcomponents-base/dist/config/Theme';
-
-// Import UI5 components
-import '@ui5/webcomponents/dist/Button';
-import '@ui5/webcomponents/dist/Input';
-// ... more imports
-
-// Set theme
-setTheme('sap_horizon');
-
-@NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  bootstrap: [AppComponent]
-})
-export class AppModule { }
-```
-
-```html
-<!-- index.html -->
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>App</title>
-  <base href="./">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script data-id="sap-ui-config" type="application/json">
-  {
-    "xx-wc-no-conflict": {
-      "events": "press"
-    }
-  }
-  </script>
-</head>
-<body>
-  <app-root></app-root>
-</body>
-</html>
-```
-
-## Forbidden Patterns
-
-❌ **Missing theme initialization:**
-```typescript
-// ❌ No setTheme() call - components will use default theme
-import '@ui5/webcomponents/dist/Button';
-```
-
-❌ **Invalid theme name:**
-```typescript
-// ❌ Wrong - not a valid UI5 theme
-setTheme('custom-theme');
-```
-
-❌ **Missing event config:**
-```html
-<!-- ❌ No xx-wc-no-conflict - may cause event conflicts -->
-<head>
-  <title>App</title>
-</head>
+## Valid Themes
+- `sap_horizon` (default), `sap_horizon_dark`, `sap_horizon_hcb`, `sap_horizon_hcw`
+- `sap_fiori_3`, `sap_fiori_3_dark`, `sap_fiori_3_hcb`, `sap_fiori_3_hcw`
+- `sap_belize`, `sap_belize_hcb`, `sap_belize_hcw`
