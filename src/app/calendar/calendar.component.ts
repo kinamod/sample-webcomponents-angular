@@ -79,11 +79,17 @@ export class CalendarComponent implements OnInit, OnChanges {
   handleDateSelect(event: any) {
     const selectedDate = event.detail.dates[0];
     this.selectedDate = this.convertFromCalendarDate(selectedDate);
-    
+
     // Find tasks for this date
-    this.tasksForSelectedDate = this.todos.filter(todo => 
+    this.tasksForSelectedDate = this.todos.filter(todo =>
       todo.deadline === this.selectedDate
     );
+
+    // Clear task selection when a new date is selected
+    this.selectedTask = null;
+
+    console.log('Date selected:', this.selectedDate);
+    console.log('Tasks for this date:', this.tasksForSelectedDate);
   }
 
   getUpcomingTasks(): Todo[] {
@@ -128,12 +134,23 @@ export class CalendarComponent implements OnInit, OnChanges {
     }
 
     if (taskId) {
-      this.selectedTask = this.todos.find(todo => todo.id === taskId) || null;
-      console.log('Selected task:', this.selectedTask);
+      const task = this.todos.find(todo => todo.id === taskId);
 
-      // Clear date selection when a task is selected
-      this.selectedDate = '';
-      this.tasksForSelectedDate = [];
+      if (task) {
+        // Set the selected date to the task's deadline
+        this.selectedDate = task.deadline;
+
+        // Find all tasks for this date
+        this.tasksForSelectedDate = this.todos.filter(todo =>
+          todo.deadline === this.selectedDate
+        );
+
+        // Optionally set the selected task for highlighting
+        this.selectedTask = task;
+
+        console.log('Selected date:', this.selectedDate);
+        console.log('Tasks for date:', this.tasksForSelectedDate);
+      }
     }
   }
 
@@ -141,5 +158,10 @@ export class CalendarComponent implements OnInit, OnChanges {
     this.selectedTask = null;
     this.selectedDate = '';
     this.tasksForSelectedDate = [];
+
+    // Clear calendar selection
+    if (this.calendar?.nativeElement) {
+      this.calendar.nativeElement.selectedDates = [];
+    }
   }
 }

@@ -75,6 +75,21 @@
   font-size: 1rem;
 }
 
+.selected-date {
+  font-size: 1.25rem;
+  color: var(--sapHighlightColor, #0a6ed1);
+  padding: 0.75rem;
+  background: var(--sapHighlightColor, #0a6ed1);
+  background: rgba(10, 110, 209, 0.1);
+  border-radius: 0.25rem;
+  text-align: center;
+}
+
+.tasks-section-title {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .tasks-for-date {
   margin-top: 1rem;
 }
@@ -84,6 +99,26 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.task-info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.highlighted-task {
+  background: rgba(10, 110, 209, 0.05);
+  border-left: 3px solid var(--sapHighlightColor, #0a6ed1);
+}
+
+.no-tasks-message {
+  padding: 2rem;
+  text-align: center;
+  color: var(--sapNeutralTextColor, #6a6d70);
+  background: var(--sapBackgroundColor, #f7f7f7);
+  border-radius: 0.25rem;
 }
 
 .single-task-detail {

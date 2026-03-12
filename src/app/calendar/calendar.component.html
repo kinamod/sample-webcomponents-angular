@@ -31,49 +31,40 @@
     </div>
 
     <div class="calendar-right">
-      <div class="task-details" *ngIf="selectedDate || selectedTask">
-        <ui5-title level="H4">Task Details</ui5-title>
-        
-        <div *ngIf="selectedDate && !selectedTask" class="date-tasks">
-          <ui5-label class="detail-label">Date: {{selectedDate}}</ui5-label>
+      <div class="task-details" *ngIf="selectedDate">
+        <ui5-title level="H4">Selected Date</ui5-title>
+
+        <div class="date-tasks">
+          <ui5-label class="detail-label selected-date">{{selectedDate}}</ui5-label>
+
+          <ui5-title level="H5" class="tasks-section-title">Tasks Due on This Day</ui5-title>
+
           <div class="tasks-for-date">
-            <ui5-list *ngIf="tasksForSelectedDate.length > 0" mode="SingleSelect" (item-click)="handleTaskClick($event)">
-              <ui5-li *ngFor="let task of tasksForSelectedDate" [attr.data-id]="task.id">
+            <ui5-list *ngIf="tasksForSelectedDate.length > 0">
+              <ui5-li *ngFor="let task of tasksForSelectedDate"
+                      [attr.data-id]="task.id"
+                      [class.highlighted-task]="selectedTask && selectedTask.id === task.id">
                 <div class="task-detail-item">
                   <ui5-title level="H6">{{task.text}}</ui5-title>
-                  <ui5-label>Deadline: {{task.deadline}}</ui5-label>
-                  <ui5-label *ngIf="task.done" class="status-complete">Status: Complete</ui5-label>
-                  <ui5-label *ngIf="!task.done" class="status-pending">Status: Pending</ui5-label>
+                  <div class="task-info">
+                    <ui5-label>Task ID: #{{task.id}}</ui5-label>
+                    <ui5-label *ngIf="task.done" class="status-complete">✓ Complete</ui5-label>
+                    <ui5-label *ngIf="!task.done" class="status-pending">○ Pending</ui5-label>
+                  </div>
                 </div>
               </ui5-li>
             </ui5-list>
-            <ui5-label *ngIf="tasksForSelectedDate.length === 0">No tasks scheduled for this date</ui5-label>
+            <div *ngIf="tasksForSelectedDate.length === 0" class="no-tasks-message">
+              <ui5-label>No tasks scheduled for this date</ui5-label>
+            </div>
           </div>
-        </div>
 
-        <div *ngIf="selectedTask" class="single-task-detail">
-          <ui5-title level="H5">{{selectedTask.text}}</ui5-title>
-          <div class="task-metadata">
-            <div class="metadata-row">
-              <ui5-label class="metadata-label">Deadline:</ui5-label>
-              <ui5-label>{{selectedTask.deadline}}</ui5-label>
-            </div>
-            <div class="metadata-row">
-              <ui5-label class="metadata-label">Status:</ui5-label>
-              <ui5-label *ngIf="selectedTask.done" class="status-complete">Complete</ui5-label>
-              <ui5-label *ngIf="!selectedTask.done" class="status-pending">Pending</ui5-label>
-            </div>
-            <div class="metadata-row">
-              <ui5-label class="metadata-label">Task ID:</ui5-label>
-              <ui5-label>#{{selectedTask.id}}</ui5-label>
-            </div>
-          </div>
-          <ui5-button class="clear-selection-btn" (click)="clearSelection()">Clear Selection</ui5-button>
+          <ui5-button class="clear-selection-btn" design="Transparent" (click)="clearSelection()">Clear Selection</ui5-button>
         </div>
       </div>
 
-      <div class="empty-state" *ngIf="!selectedDate && !selectedTask">
-        <ui5-label>Select a date or task to view details</ui5-label>
+      <div class="empty-state" *ngIf="!selectedDate">
+        <ui5-label>Select a date on the calendar to view tasks</ui5-label>
       </div>
     </div>
   </div>
