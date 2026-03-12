@@ -34,6 +34,8 @@ export class ComparisonChartComponent implements OnChanges, AfterViewInit, OnDes
       this.extractPeriods();
       if (this.selectedPeriod && this.chart) {
         this.updateChartData();
+        // Force resize after update
+        setTimeout(() => this.chart?.resize(), 100);
       }
     }
   }
@@ -55,8 +57,18 @@ export class ComparisonChartComponent implements OnChanges, AfterViewInit, OnDes
   private initChart(): void {
     if (!this.chartContainer) return;
 
-    this.chart = echarts.init(this.chartContainer.nativeElement);
-    this.updateChart();
+    // Wait for next tick to ensure container has proper dimensions
+    setTimeout(() => {
+      this.chart = echarts.init(this.chartContainer.nativeElement);
+      this.updateChart();
+
+      // Force resize after initialization
+      setTimeout(() => {
+        if (this.chart) {
+          this.chart.resize();
+        }
+      }, 100);
+    }, 0);
 
     window.addEventListener('resize', this.handleResize);
   }
@@ -196,7 +208,7 @@ export class ComparisonChartComponent implements OnChanges, AfterViewInit, OnDes
 
   toggleCollapsed(): void {
     this.collapsed = !this.collapsed;
-    if (!this.collapsed && this.chart) {
+    if (this.chart) {
       setTimeout(() => this.chart?.resize(), 300);
     }
   }
