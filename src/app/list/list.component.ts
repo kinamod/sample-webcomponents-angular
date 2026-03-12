@@ -1,11 +1,11 @@
-import { Component, OnInit, Output, Input, EventEmitter  } from '@angular/core';
+import { Component, OnInit, OnChanges, Output, Input, EventEmitter  } from '@angular/core';
 
 @Component({
 	selector: 'app-list',
 	templateUrl: './list.component.html',
 	styleUrls: ['./list.component.css']
 })
-export class ListComponent implements OnInit {
+export class ListComponent implements OnInit, OnChanges {
 
 	@Input() todos;
 	@Output() deletedItem = new EventEmitter();
@@ -15,6 +15,11 @@ export class ListComponent implements OnInit {
 	constructor() { }
 
 	ngOnInit() {
+		console.log('List component received todos:', this.todos);
+	}
+
+	ngOnChanges() {
+		console.log('List component todos changed:', this.todos);
 	}
 
 	handleEdit(event) {

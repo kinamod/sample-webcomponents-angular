@@ -1,11 +1,9 @@
 <ui5-list id="todo-list" mode="MultiSelect" (selectionChange)="handleChangeSelection($event)">
 	<ng-container *ngFor="let todo of todos">
 		<ui5-li-custom
-		[key]="todo.id"
 		[id]="todo.id"
 		[selected]="todo.done || undefined"
 		[data-key]="todo.id"
-		ng-class="{ 'hidden': todo.hidden }"
 		>
 
 		<div class="li-content">
