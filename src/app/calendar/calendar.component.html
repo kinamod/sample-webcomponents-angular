@@ -20,14 +20,16 @@
   </div>
 
   <div class="upcoming-tasks">
-    <ui5-title level="H5">Upcoming Tasks</ui5-title>
-    <ui5-list>
-      <ui5-li *ngFor="let task of getUpcomingTasks()">
+    <ui5-title level="H5">Upcoming Tasks ({{upcomingTasks.length}})</ui5-title>
+    <ui5-list *ngIf="upcomingTasks.length > 0">
+      <ui5-li *ngFor="let task of upcomingTasks">
         <div class="task-item">
           <span class="task-text">{{task.text}}</span>
           <span class="task-date">Due: {{task.deadline}}</span>
         </div>
       </ui5-li>
     </ui5-list>
+    <ui5-label *ngIf="upcomingTasks.length === 0 && todos.length > 0">No upcoming tasks</ui5-label>
+    <ui5-label *ngIf="!todos || todos.length === 0">No tasks available. Add some tasks in the "My Todos" tab!</ui5-label>
   </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 
 interface Todo {
   text: string;
@@ -12,17 +12,36 @@ interface Todo {
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
-export class CalendarComponent implements OnChanges {
+export class CalendarComponent implements OnInit, OnChanges {
   @Input() todos: Todo[] = [];
   @ViewChild('calendar') calendar: ElementRef;
 
   selectedDate: string = '';
   tasksForSelectedDate: Todo[] = [];
+  upcomingTasks: Todo[] = [];
+
+  ngOnInit(): void {
+    console.log('Calendar component initialized with todos:', this.todos);
+    this.updateUpcomingTasks();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.todos && this.todos) {
+      console.log('Calendar received todos:', this.todos);
+      this.updateUpcomingTasks();
       this.updateCalendarSpecialDates();
     }
+  }
+
+  updateUpcomingTasks(): void {
+    this.upcomingTasks = this.todos
+      .filter(todo => !todo.done)
+      .sort((a, b) => {
+        const dateA = this.parseDate(a.deadline);
+        const dateB = this.parseDate(b.deadline);
+        return dateA.getTime() - dateB.getTime();
+      });
+    console.log('Updated upcoming tasks:', this.upcomingTasks);
   }
 
   updateCalendarSpecialDates() {
