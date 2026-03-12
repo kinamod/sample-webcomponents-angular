@@ -1,0 +1,46 @@
+# UI5 Design System Rules
+
+This project uses **SAP UI5 Web Components** exclusively. The UI5 design system has been indexed and is available for reference.
+
+## Core Rules
+
+### 1. Use UI5 Components Only
+- ✅ All interactive UI must use `<ui5-*>` components from the indexed design system
+- ✅ Use semantic HTML for layout only (`<div>`, `<span>`, `<p>`, `<section>`)
+- ❌ Never use other UI frameworks (Material, Bootstrap, etc.)
+- ❌ Never use plain interactive HTML (`<button>`, `<input>`, `<select>`)
+
+### 2. Import Every Component
+- Import components individually in `app.module.ts`: `import '@ui5/webcomponents/dist/Button';`
+- Add `CUSTOM_ELEMENTS_SCHEMA` to the module's `schemas` array
+- Never import entire packages
+
+### 3. Configure Theme
+- Set theme in `app.module.ts`: `setTheme('sap_horizon');`
+- Add `xx-wc-no-conflict` event config to `index.html`
+
+### 4. Angular Integration
+- Access components via `@ViewChild` with `ElementRef`
+- UI5 events provide data in `event.detail`
+- Call methods via `nativeElement`: `this.dialog.nativeElement.show()`
+
+## Quick Reference
+
+**Valid Approach:**
+
+<ui5-button design="Emphasized" (click)="submit()">Submit</ui5-button>
+<ui5-input placeholder="Name" (input)="onChange($event)"></ui5-input>
+```
+
+**Invalid Approach:**
+```html
+<button (click)="submit()">Submit</button> <!-- ❌ Plain HTML -->
+<mat-button>Submit</mat-button> <!-- ❌ Other framework -->
+```
+
+## Resources
+- Components: https://ui5.github.io/webcomponents/
+- Design System: https://www.sap.com/design-system/fiori-design-web/
+- Icons: https://ui5.github.io/webcomponents/icons/
+
+Refer to `.builder/rules/*.mdc` for detailed enforcement rules.

@@ -1,0 +1,44 @@
+---
+description: Verify all UI5 components are properly imported
+globs:
+  - "**/app.module.ts"
+alwaysApply: true
+---
+
+# UI5 Import Requirements
+
+All UI5 components used in templates MUST be imported in `app.module.ts`.
+
+## Required Setup
+
+**Import pattern:**
+
+// Main components: '@ui5/webcomponents/dist/ComponentName'
+import '@ui5/webcomponents/dist/Button';
+import '@ui5/webcomponents/dist/Input';
+
+// Fiori components: '@ui5/webcomponents-fiori/dist/ComponentName'
+import '@ui5/webcomponents-fiori/dist/ShellBar';
+
+// Icons: '@ui5/webcomponents-icons/dist/icon-name.js'
+import '@ui5/webcomponents-icons/dist/palette.js';
+```
+
+**Module schema:**
+```typescript
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+
+@NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Required for UI5
+})
+```
+
+## Rules
+
+✅ Import each component individually from `/dist/` path
+
+✅ Add `CUSTOM_ELEMENTS_SCHEMA` to module
+
+❌ Never import entire packages (`import '@ui5/webcomponents'`)
+
+❌ Never use components without importing them first

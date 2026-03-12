@@ -1,0 +1,35 @@
+---
+description: Ensure proper UI5 theme configuration
+globs:
+  - "**/app.module.ts"
+  - "**/index.html"
+alwaysApply: true
+---
+
+# UI5 Theme Configuration
+
+## app.module.ts
+
+**Set theme:**
+
+import { setTheme } from '@ui5/webcomponents-base/dist/config/Theme';
+setTheme('sap_horizon'); // or sap_horizon_dark, sap_fiori_3, etc.
+```
+
+## index.html
+
+**Prevent event conflicts:**
+```html
+<script data-id="sap-ui-config" type="application/json">
+{
+  "xx-wc-no-conflict": {
+    "events": "press"
+  }
+}
+</script>
+```
+
+## Valid Themes
+- `sap_horizon` (default), `sap_horizon_dark`, `sap_horizon_hcb`, `sap_horizon_hcw`
+- `sap_fiori_3`, `sap_fiori_3_dark`, `sap_fiori_3_hcb`, `sap_fiori_3_hcw`
+- `sap_belize`, `sap_belize_hcb`, `sap_belize_hcw`
