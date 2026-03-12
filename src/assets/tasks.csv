@@ -1,0 +1,6 @@
+id,text,deadline,done
+1,Get some carrots,27/3/2026,false
+2,Do some magic,22/3/2026,false
+3,Go to the gym,24/3/2026,false
+4,Buy milk,30/3/2026,false
+5,Eat some fruits,15/3/2026,true

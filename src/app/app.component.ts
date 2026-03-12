@@ -1,4 +1,5 @@
-import { Component, Input, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, ViewEncapsulation, OnInit } from '@angular/core';
+import { TaskService, Todo } from './services/task.service';
 
 @Component({
 	selector: 'app-root',
@@ -7,7 +8,7 @@ import { Component, Input, ViewChild, ElementRef, ViewEncapsulation } from '@ang
 	encapsulation: ViewEncapsulation.None
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
 	@Input() selectionChange;
 
 	@ViewChild('dialog') oDialog: ElementRef;
@@ -17,45 +18,28 @@ export class AppComponent {
 	dialogDate: string;
 
 	title = 'app';
-	todos: Array<Todo> = [
-		{
-			text: 'Get some carrots',
-			id: 1,
-			deadline: '27/7/2018',
-			done: false
-		},
-		{
-			text: 'Do some magic',
-			id: 2,
-			deadline: '22/7/2018',
-			done: false
-		},
-		{
-			text: 'Go to the gym',
-			id: 3,
-			deadline: '24/7/2018',
-			done: false
-		},
-		{
-			text: 'Buy milk',
-			id: 4,
-			deadline: '30/7/2018',
-			done: false
-		},
-		{
-			text: 'Eat some fruits',
-			id: 5,
-			deadline: '29/7/2018',
-			done: true
-		}
-	];
-	id = 5;
+	activeTab = 'analytics';
+	todos: Array<Todo> = [];
+	id = 0;
 	done = [];
 	unDone = [];
-	oItemToEdit: Todo = this.todos[0];
+	oItemToEdit: Todo;
 
-	constructor() {
-		this.syncTodos();
+	constructor(private taskService: TaskService) {}
+
+	ngOnInit() {
+		// Subscribe to tasks from service
+		this.taskService.todos$.subscribe(tasks => {
+			this.todos = tasks;
+			if (tasks.length > 0) {
+				this.id = Math.max.apply(null, tasks.map(t => t.id));
+				this.oItemToEdit = tasks[0];
+			}
+			this.syncTodos();
+			console.log('Todos loaded from service:', this.todos);
+			console.log('UnDone tasks:', this.unDone);
+			console.log('Done tasks:', this.done);
+		});
 	}
 
 	handleAddTodo($event) {
@@ -66,8 +50,7 @@ export class AppComponent {
 			done: false
 		};
 
-		this.todos.push(newTodo);
-		this.syncTodos();
+		this.taskService.addTask(newTodo);
 	}
 
 	syncTodos() {
@@ -85,36 +68,38 @@ export class AppComponent {
 	handleUndone($event) {
 		const oCheckedIds = new Set(this.done.map(todo => todo.id));
 
-		$event.selected.map((todo => {
-			oCheckedIds.add(parseInt(todo.id, 10));
-		}));
-
-		this.todos.map((todo) => {
-			todo.done = oCheckedIds.has(todo.id);
+		$event.selected.forEach((item: any) => {
+			oCheckedIds.add(parseInt(item.id, 10));
 		});
 
-		this.syncTodos();
+		this.todos.forEach((todo) => {
+			const shouldBeDone = oCheckedIds.has(todo.id);
+			if (todo.done !== shouldBeDone) {
+				this.taskService.updateTask(Object.assign({}, todo, { done: shouldBeDone }));
+			}
+		});
 	}
 
 	handleDone($event) {
-		const oCheckedIds = new Set($event.selected.map(todo => parseInt(todo.id, 10)));
+		const oCheckedIds = new Set($event.selected.map((item: any) => parseInt(item.id, 10)));
 		const oToUncheck = new Set();
 
-		this.done.forEach((todo => {
+		this.done.forEach((todo) => {
 			if (!oCheckedIds.has(todo.id)) {
-			oToUncheck.add(todo.id);
+				oToUncheck.add(todo.id);
 			}
-		}));
+		});
 
 		this.todos.forEach((todo) => {
-			todo.done = !oToUncheck.has(todo.id) && todo.done;
+			const shouldBeDone = !oToUncheck.has(todo.id) && todo.done;
+			if (todo.done !== shouldBeDone) {
+				this.taskService.updateTask(Object.assign({}, todo, { done: shouldBeDone }));
+			}
 		});
-		this.syncTodos();
 	}
 
 	removeItem($event) {
-		this.todos = this.todos.filter(todo => todo.id !== $event);
-		this.syncTodos();
+		this.taskService.deleteTask($event);
 	}
 
 	closeDialog() {
@@ -122,22 +107,16 @@ export class AppComponent {
 	}
 
 	saveDialog() {
-		this.todos.map((oTodo) => {
-			if (oTodo.id === this.oItemToEdit.id) {
-			oTodo.text = this.oDialogInput.nativeElement.value;
-			oTodo.deadline = this.oDialogDatePicker.nativeElement.value;
-			return;
-			}
+		const updatedTask = Object.assign({}, this.oItemToEdit, {
+			text: this.oDialogInput.nativeElement.value,
+			deadline: this.oDialogDatePicker.nativeElement.value
 		});
 
+		this.taskService.updateTask(updatedTask);
 		this.closeDialog();
 	}
-}
 
-
-interface Todo {
-	text: string;
-	id: number;
-	deadline: string;
-	done: boolean;
+	handleTabChange(tab: string) {
+		this.activeTab = tab;
+	}
 }

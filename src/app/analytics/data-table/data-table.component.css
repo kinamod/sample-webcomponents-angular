@@ -1,0 +1,38 @@
+.data-table-panel {
+  margin: 2rem 0;
+}
+
+.table-controls {
+  padding: 1rem;
+  border-bottom: 1px solid var(--sapGroup_ContentBorderColor, #d9d9d9);
+}
+
+.data-table {
+  width: 100%;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-top: 1px solid var(--sapGroup_ContentBorderColor, #d9d9d9);
+}
+
+.page-label {
+  font-weight: 500;
+  min-width: 120px;
+  text-align: center;
+  color: var(--sapTextColor, #32363a);
+}
+
+@media (max-width: 768px) {
+  .table-controls {
+    text-align: center;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+  }
+}

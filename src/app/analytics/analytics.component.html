@@ -1,0 +1,53 @@
+<div class="analytics-container">
+  <ui5-title level="H2">UK Retail Sales Analytics</ui5-title>
+
+  <!-- Loading indicator -->
+  <ui5-busy-indicator *ngIf="loading" active size="Large" class="loading-indicator">
+    <ui5-label>Loading analytics data...</ui5-label>
+  </ui5-busy-indicator>
+
+  <!-- Error state -->
+  <div *ngIf="error && !loading" class="error-state">
+    <ui5-message-strip design="Negative">
+      <strong>Error:</strong> {{error.message || 'Failed to load data'}} 
+      <span *ngIf="error.status">(Status: {{error.status}})</span>
+    </ui5-message-strip>
+    <ui5-button design="Emphasized" (click)="retry()" class="retry-button">
+      <ui5-icon name="refresh"></ui5-icon>
+      Retry
+    </ui5-button>
+  </div>
+
+  <!-- Mock data info message -->
+  <div *ngIf="!loading && !error && usingMockData" class="info-message">
+    <ui5-message-strip design="Information">
+      <strong>Demo Mode:</strong> Displaying sample data for demonstration. The ONS API connection is currently using fallback data.
+    </ui5-message-strip>
+  </div>
+
+  <!-- Main content -->
+  <div *ngIf="!loading && !error && retailSalesData">
+    <app-kpi-summary [data]="retailSalesData"></app-kpi-summary>
+    
+    <app-filters-panel 
+      *ngIf="retailSalesData.dimensions && retailSalesData.dimensions.length > 0"
+      [dimensions]="retailSalesData.dimensions"
+      (filtersChange)="onFiltersChange($event)">
+    </app-filters-panel>
+    
+    <app-trend-chart 
+      [data]="retailSalesData.observations"
+      [dimensions]="retailSalesData.dimensions">
+    </app-trend-chart>
+    
+    <app-comparison-chart 
+      *ngIf="largeSmallData"
+      [data]="largeSmallData.observations">
+    </app-comparison-chart>
+    
+    <app-data-table 
+      [data]="retailSalesData.observations"
+      (export)="exportToCsv()">
+    </app-data-table>
+  </div>
+</div>

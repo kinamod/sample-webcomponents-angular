@@ -1,0 +1,22 @@
+<ui5-panel 
+  header-text="Business Size Comparison" 
+  [collapsed]="collapsed"
+  (toggle)="toggleCollapsed()"
+  class="comparison-chart-panel">
+  
+  <div class="chart-controls">
+    <ui5-label class="control-label">Time Period:</ui5-label>
+    <ui5-select (change)="onPeriodChange($event)">
+      <ui5-option 
+        *ngFor="let period of availablePeriods; let i = index" 
+        [value]="period.value"
+        [selected]="period.value === selectedPeriod">
+        {{period.label}}
+      </ui5-option>
+    </ui5-select>
+  </div>
+
+  <div class="chart-wrapper">
+    <div #chartContainer class="chart-container"></div>
+  </div>
+</ui5-panel>

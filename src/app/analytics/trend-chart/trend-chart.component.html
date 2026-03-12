@@ -1,0 +1,26 @@
+<ui5-panel 
+  header-text="Retail Sales Trend" 
+  [collapsed]="collapsed"
+  (toggle)="toggleCollapsed()"
+  class="trend-chart-panel">
+  
+  <!-- Dimension toggles -->
+  <div class="chart-controls" *ngIf="availableDimensions.length > 0">
+    <div class="toggle-group" *ngFor="let dimension of availableDimensions">
+      <ui5-label class="control-label">{{dimension.label || dimension.name}}:</ui5-label>
+      <ui5-segmented-button (selection-change)="onDimensionChange(dimension.name, $event)">
+        <ui5-segmented-button-item 
+          *ngFor="let option of dimension.options; let i = index" 
+          [pressed]="i === 0"
+          [attr.data-value]="option.value">
+          {{option.label}}
+        </ui5-segmented-button-item>
+      </ui5-segmented-button>
+    </div>
+  </div>
+
+  <!-- Chart container -->
+  <div class="chart-wrapper">
+    <div #chartContainer class="chart-container"></div>
+  </div>
+</ui5-panel>
