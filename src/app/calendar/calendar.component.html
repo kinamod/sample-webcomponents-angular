@@ -2,9 +2,14 @@
   <ui5-title level="H3">Task Calendar</ui5-title>
   
   <div class="calendar-wrapper">
-    <ui5-calendar 
+    <ui5-calendar
       #calendar
       (selected-dates-change)="handleDateSelect($event)">
+      <ui5-date
+        *ngFor="let date of getTaskDates()"
+        [value]="date"
+        type="NonWorking">
+      </ui5-date>
     </ui5-calendar>
   </div>
 

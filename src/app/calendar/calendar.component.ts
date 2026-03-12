@@ -21,13 +21,11 @@ export class CalendarComponent implements OnInit, OnChanges {
   upcomingTasks: Todo[] = [];
 
   ngOnInit(): void {
-    console.log('Calendar component initialized with todos:', this.todos);
     this.updateUpcomingTasks();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.todos && this.todos) {
-      console.log('Calendar received todos:', this.todos);
       this.updateUpcomingTasks();
       this.updateCalendarSpecialDates();
     }
@@ -41,7 +39,6 @@ export class CalendarComponent implements OnInit, OnChanges {
         const dateB = this.parseDate(b.deadline);
         return dateA.getTime() - dateB.getTime();
       });
-    console.log('Updated upcoming tasks:', this.upcomingTasks);
   }
 
   updateCalendarSpecialDates() {
@@ -104,5 +101,12 @@ export class CalendarComponent implements OnInit, OnChanges {
       return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
     }
     return new Date();
+  }
+
+  getTaskDates(): string[] {
+    return this.todos
+      .filter(todo => !todo.done)
+      .map(todo => this.convertToCalendarDate(todo.deadline))
+      .filter(date => date);
   }
 }

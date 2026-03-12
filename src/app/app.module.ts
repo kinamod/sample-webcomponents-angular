@@ -37,6 +37,7 @@ import '@ui5/webcomponents-icons/dist/loan.js';
 import '@ui5/webcomponents-icons/dist/globe.js';
 import '@ui5/webcomponents-icons/dist/calendar.js';
 import '@ui5/webcomponents/dist/Calendar';
+import '@ui5/webcomponents/dist/CalendarDate';
 import { CalendarComponent } from './calendar/calendar.component';
 setTheme('sap_horizon');
 @NgModule({
