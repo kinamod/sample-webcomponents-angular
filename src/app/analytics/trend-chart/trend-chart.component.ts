@@ -25,7 +25,7 @@ export class TrendChartComponent implements OnChanges, AfterViewInit, OnDestroy 
   ngOnChanges(): void {
     if (this.dimensions && this.dimensions.length > 0) {
       this.availableDimensions = this.dimensions.filter(d => d.options && d.options.length > 1);
-      
+
       // Initialize selected dimensions
       this.availableDimensions.forEach(dim => {
         if (!this.selectedDimensions[dim.name] && dim.options && dim.options.length > 0) {
@@ -36,6 +36,8 @@ export class TrendChartComponent implements OnChanges, AfterViewInit, OnDestroy 
 
     if (this.chart) {
       this.updateChart();
+      // Force resize after update
+      setTimeout(() => this.chart?.resize(), 100);
     }
   }
 
@@ -55,8 +57,18 @@ export class TrendChartComponent implements OnChanges, AfterViewInit, OnDestroy 
   private initChart(): void {
     if (!this.chartContainer) return;
 
-    this.chart = echarts.init(this.chartContainer.nativeElement);
-    this.updateChart();
+    // Wait for next tick to ensure container has proper dimensions
+    setTimeout(() => {
+      this.chart = echarts.init(this.chartContainer.nativeElement);
+      this.updateChart();
+
+      // Force resize after initialization
+      setTimeout(() => {
+        if (this.chart) {
+          this.chart.resize();
+        }
+      }, 100);
+    }, 0);
 
     // Handle window resize
     window.addEventListener('resize', this.handleResize);
@@ -176,7 +188,7 @@ export class TrendChartComponent implements OnChanges, AfterViewInit, OnDestroy 
 
   toggleCollapsed(): void {
     this.collapsed = !this.collapsed;
-    if (!this.collapsed && this.chart) {
+    if (this.chart) {
       setTimeout(() => this.chart?.resize(), 300);
     }
   }
