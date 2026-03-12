@@ -1,5 +1,6 @@
 .trend-chart-panel {
   margin: 2rem 0;
+  width: 100%;
 }
 
 .chart-controls {
@@ -26,10 +27,12 @@
 
 .chart-wrapper {
   padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .chart-container {
-  width: 100%;
+  width: 100% !important;
   height: 500px;
   min-height: 400px;
 }
