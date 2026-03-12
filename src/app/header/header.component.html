@@ -8,8 +8,9 @@
 		<ui5-avatar slot="profile" size="XS" initials="JD"></ui5-avatar>
 	</ui5-shellbar>
 
-	<ui5-tabcontainer fixed collapsed>
-		<ui5-tab text="My Todos"></ui5-tab>
+	<ui5-tabcontainer fixed collapsed (tab-select)="handleTabChange($event)">
+		<ui5-tab text="My Todos" data-tab="todos"></ui5-tab>
+		<ui5-tab text="Calendar" data-tab="calendar"></ui5-tab>
 	</ui5-tabcontainer>
 
 	<ui5-popover #themeSettingsPopover

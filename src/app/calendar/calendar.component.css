@@ -1,0 +1,39 @@
+.calendar-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.calendar-wrapper {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.tasks-info {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: var(--sapBackgroundColor, #f5f5f5);
+  border-radius: 0.5rem;
+}
+
+.upcoming-tasks {
+  margin-top: 2rem;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.task-text {
+  flex: 1;
+}
+
+.task-date {
+  font-size: 0.875rem;
+  color: var(--sapNeutralTextColor, #6a6d70);
+  margin-left: 1rem;
+}

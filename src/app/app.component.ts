@@ -17,6 +17,7 @@ export class AppComponent {
 	dialogDate: string;
 
 	title = 'app';
+	activeTab = 'todos';
 	todos: Array<Todo> = [
 		{
 			text: 'Get some carrots',
@@ -131,6 +132,10 @@ export class AppComponent {
 		});
 
 		this.closeDialog();
+	}
+
+	handleTabChange(tab: string) {
+		this.activeTab = tab;
 	}
 }
 

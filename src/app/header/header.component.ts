@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import {setTheme } from '@ui5/webcomponents-base/dist/config/Theme';
 
 
@@ -10,12 +10,18 @@ import {setTheme } from '@ui5/webcomponents-base/dist/config/Theme';
 
 export class HeaderComponent implements OnInit {
 	@Input() selectionChange;
+	@Output() tabChange = new EventEmitter<string>();
 	@ViewChild('themeSettingsPopover') themeSettingsPopover: ElementRef;
 	@ViewChild('profileSettingsPopover') profileSettingsPopover: ElementRef;
 
 	constructor() { }
 
 	ngOnInit() {
+	}
+
+	handleTabChange(event) {
+		const selectedTab = event.detail.tab.getAttribute('data-tab');
+		this.tabChange.emit(selectedTab);
 	}
 
 	handleThemeSettingsToggle(event) {

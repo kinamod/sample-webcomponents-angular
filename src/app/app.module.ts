@@ -35,13 +35,17 @@ import '@ui5/webcomponents-icons/dist/account.js';
 import '@ui5/webcomponents-icons/dist/private.js';
 import '@ui5/webcomponents-icons/dist/loan.js';
 import '@ui5/webcomponents-icons/dist/globe.js';
+import '@ui5/webcomponents-icons/dist/calendar.js';
+import '@ui5/webcomponents/dist/Calendar';
+import { CalendarComponent } from './calendar/calendar.component';
 setTheme('sap_horizon');
 @NgModule({
 	declarations: [
 		AppComponent,
 		HeaderComponent,
 		ListComponent,
-		UserInputComponent
+		UserInputComponent,
+  CalendarComponent
 	],
 	schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 		imports: [
