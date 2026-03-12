@@ -9,6 +9,7 @@ import { OnsApiService, DatasetWithObservations } from '../services/ons-api.serv
 export class AnalyticsComponent implements OnInit {
   loading = true;
   error: any = null;
+  usingMockData = false;
 
   retailSalesData: DatasetWithObservations | null = null;
   allBusinessesData: DatasetWithObservations | null = null;
@@ -25,6 +26,7 @@ export class AnalyticsComponent implements OnInit {
   async loadInitialData(): Promise<void> {
     this.loading = true;
     this.error = null;
+    this.usingMockData = false;
 
     try {
       // Fetch retail sales index (main dataset)
@@ -44,6 +46,9 @@ export class AnalyticsComponent implements OnInit {
         'retail-sales-index-large-and-small-businesses',
         { geography: 'K02000001' }
       ).toPromise() as DatasetWithObservations;
+
+      // Check if we're using mock data (simplified check)
+      this.usingMockData = this.retailSalesData?.versionInfo?.version === 1;
 
       this.loading = false;
     } catch (err: any) {

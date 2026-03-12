@@ -18,6 +18,13 @@
     </ui5-button>
   </div>
 
+  <!-- Mock data info message -->
+  <div *ngIf="!loading && !error && usingMockData" class="info-message">
+    <ui5-message-strip design="Information">
+      <strong>Demo Mode:</strong> Displaying sample data for demonstration. The ONS API connection is currently using fallback data.
+    </ui5-message-strip>
+  </div>
+
   <!-- Main content -->
   <div *ngIf="!loading && !error && retailSalesData">
     <app-kpi-summary [data]="retailSalesData"></app-kpi-summary>
