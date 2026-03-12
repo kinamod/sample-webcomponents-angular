@@ -18,7 +18,7 @@
       <div class="upcoming-tasks">
         <ui5-title level="H5">Upcoming Tasks ({{upcomingTasks.length}})</ui5-title>
         <ui5-list *ngIf="upcomingTasks.length > 0" mode="SingleSelect" (item-click)="handleTaskClick($event)">
-          <ui5-li *ngFor="let task of upcomingTasks" [data-id]="task.id">
+          <ui5-li *ngFor="let task of upcomingTasks" [attr.data-id]="task.id">
             <div class="task-item">
               <span class="task-text">{{task.text}}</span>
               <span class="task-date">Due: {{task.deadline}}</span>
@@ -38,7 +38,7 @@
           <ui5-label class="detail-label">Date: {{selectedDate}}</ui5-label>
           <div class="tasks-for-date">
             <ui5-list *ngIf="tasksForSelectedDate.length > 0" mode="SingleSelect" (item-click)="handleTaskClick($event)">
-              <ui5-li *ngFor="let task of tasksForSelectedDate" [data-id]="task.id">
+              <ui5-li *ngFor="let task of tasksForSelectedDate" [attr.data-id]="task.id">
                 <div class="task-detail-item">
                   <ui5-title level="H6">{{task.text}}</ui5-title>
                   <ui5-label>Deadline: {{task.deadline}}</ui5-label>

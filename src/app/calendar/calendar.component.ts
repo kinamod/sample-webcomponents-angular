@@ -112,8 +112,29 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   handleTaskClick(event: any) {
-    const taskId = parseInt(event.detail.item.getAttribute('data-id'), 10);
-    this.selectedTask = this.todos.find(todo => todo.id === taskId) || null;
+    console.log('Task clicked:', event);
+
+    // Try to get the task ID from the clicked item
+    const clickedItem = event.detail?.item || event.target;
+    let taskId: number | null = null;
+
+    if (clickedItem) {
+      const dataId = clickedItem.getAttribute('data-id');
+      console.log('Data ID from item:', dataId);
+
+      if (dataId) {
+        taskId = parseInt(dataId, 10);
+      }
+    }
+
+    if (taskId) {
+      this.selectedTask = this.todos.find(todo => todo.id === taskId) || null;
+      console.log('Selected task:', this.selectedTask);
+
+      // Clear date selection when a task is selected
+      this.selectedDate = '';
+      this.tasksForSelectedDate = [];
+    }
   }
 
   clearSelection() {
