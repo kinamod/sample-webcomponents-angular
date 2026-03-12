@@ -4,7 +4,7 @@
 		<app-user-input (addTodo)="handleAddTodo($event)"></app-user-input>
 
 		<ui5-panel
-			[collapsed]="!this.unDone.length"
+			[collapsed]="false"
 			header-text="Incompleted Tasks"
 			class="list-todos-panel">
 			<app-list [todos]="unDone"
@@ -15,7 +15,7 @@
 		</ui5-panel>
 		
 		<ui5-panel
-			[collapsed]="!this.done.length"
+			[collapsed]="false"
 			header-text="Completed Tasks"
 			class="list-todos-panel">
 			<app-list [todos]="done"

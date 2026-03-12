@@ -57,6 +57,9 @@ export class AppComponent {
 
 	constructor() {
 		this.syncTodos();
+		console.log('Todos initialized:', this.todos);
+		console.log('UnDone tasks:', this.unDone);
+		console.log('Done tasks:', this.done);
 	}
 
 	handleAddTodo($event) {
