@@ -136,12 +136,19 @@ export class CalendarComponent implements OnInit, OnChanges {
       return;
     }
 
+    // Normalize the selected date for comparison
+    const normalizedSelectedDate = this.normalizeDate(this.selectedDate);
+    this.selectedDate = normalizedSelectedDate; // Update to normalized version
+
     // Find all tasks for this date (both complete and incomplete)
-    this.tasksForSelectedDate = this.todos.filter(todo =>
-      todo.deadline === this.selectedDate
-    );
+    this.tasksForSelectedDate = this.todos.filter(todo => {
+      const normalizedTaskDate = this.normalizeDate(todo.deadline);
+      console.log(`Comparing task deadline "${normalizedTaskDate}" with selected date "${normalizedSelectedDate}"`);
+      return normalizedTaskDate === normalizedSelectedDate;
+    });
 
     console.log('✓ Date selected:', this.selectedDate);
+    console.log('✓ All tasks:', this.todos.map(t => ({ text: t.text, deadline: t.deadline })));
     console.log('✓ Showing', this.tasksForSelectedDate.length, 'task(s) for this date');
     console.log('✓ Selected task cleared');
 
@@ -167,10 +174,26 @@ export class CalendarComponent implements OnInit, OnChanges {
     return new Date();
   }
 
+  normalizeDate(dateString: string): string {
+    // Ensure consistent dd/MM/yyyy format with padding
+    const parts = dateString.split('/');
+    if (parts.length === 3) {
+      const day = parts[0].padStart(2, '0');
+      const month = parts[1].padStart(2, '0');
+      const year = parts[2];
+      return `${day}/${month}/${year}`;
+    }
+    return dateString;
+  }
+
   getTaskDates(): string[] {
     return this.todos
       .filter(todo => !todo.done)
-      .map(todo => this.convertToCalendarDate(todo.deadline))
+      .map(todo => {
+        // Normalize before converting to calendar format
+        const normalized = this.normalizeDate(todo.deadline);
+        return this.convertToCalendarDate(normalized);
+      })
       .filter(date => date);
   }
 
@@ -194,12 +217,12 @@ export class CalendarComponent implements OnInit, OnChanges {
       const task = this.todos.find(todo => todo.id === taskId);
 
       if (task) {
-        // Set the selected date to the task's deadline
-        this.selectedDate = task.deadline;
+        // Set the selected date to the task's deadline (normalized)
+        this.selectedDate = this.normalizeDate(task.deadline);
 
         // Find all tasks for this date
         this.tasksForSelectedDate = this.todos.filter(todo =>
-          todo.deadline === this.selectedDate
+          this.normalizeDate(todo.deadline) === this.selectedDate
         );
 
         // Optionally set the selected task for highlighting
