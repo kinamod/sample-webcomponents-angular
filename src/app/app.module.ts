@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA  } from '@angular/core';
 
 import { AppComponent } from './app.component';
@@ -50,7 +51,8 @@ setTheme('sap_horizon');
 	],
 	schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 		imports: [
-		BrowserModule
+		BrowserModule,
+		HttpClientModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

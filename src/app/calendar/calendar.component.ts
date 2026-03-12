@@ -19,6 +19,7 @@ export class CalendarComponent implements OnInit, OnChanges {
   selectedDate: string = '';
   tasksForSelectedDate: Todo[] = [];
   upcomingTasks: Todo[] = [];
+  selectedTask: Todo | null = null;
 
   ngOnInit(): void {
     this.updateUpcomingTasks();
@@ -108,5 +109,16 @@ export class CalendarComponent implements OnInit, OnChanges {
       .filter(todo => !todo.done)
       .map(todo => this.convertToCalendarDate(todo.deadline))
       .filter(date => date);
+  }
+
+  handleTaskClick(event: any) {
+    const taskId = parseInt(event.detail.item.getAttribute('data-id'), 10);
+    this.selectedTask = this.todos.find(todo => todo.id === taskId) || null;
+  }
+
+  clearSelection() {
+    this.selectedTask = null;
+    this.selectedDate = '';
+    this.tasksForSelectedDate = [];
   }
 }
