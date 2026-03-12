@@ -34,7 +34,9 @@ export class KpiSummaryComponent implements OnChanges {
 
   private calculateKPIs(): void {
     const sorted = this.data.observations.slice().sort((a, b) => {
-      return new Date(b.time).getTime() - new Date(a.time).getTime();
+      const dateA = this.parseTimeString(a.time);
+      const dateB = this.parseTimeString(b.time);
+      return dateB.getTime() - dateA.getTime();
     });
 
     if (sorted.length === 0) return;
@@ -51,13 +53,30 @@ export class KpiSummaryComponent implements OnChanges {
     };
   }
 
+  private parseTimeString(timeStr: string): Date {
+    // Parse MMM-YY format (e.g., "Jan-24", "Aug-89")
+    const match = timeStr.match(/^([A-Za-z]{3})-(\d{2})$/);
+    if (match) {
+      const months: Record<string, number> = {
+        'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+        'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+      };
+      const month = months[match[1]] || 0;
+      const year = parseInt(match[2], 10);
+      const fullYear = year >= 89 ? 1900 + year : 2000 + year;
+      return new Date(fullYear, month, 1);
+    }
+    // Fallback to standard date parsing
+    return new Date(timeStr);
+  }
+
   private findSamePeriodLastYear(observations: Observation[], currentTime: string): Observation | null {
-    const currentDate = new Date(currentTime);
+    const currentDate = this.parseTimeString(currentTime);
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth();
 
     for (const obs of observations) {
-      const obsDate = new Date(obs.time);
+      const obsDate = this.parseTimeString(obs.time);
       if (obsDate.getFullYear() === currentYear - 1 && obsDate.getMonth() === currentMonth) {
         return obs;
       }

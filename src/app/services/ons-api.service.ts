@@ -121,13 +121,18 @@ export class OnsApiService {
     filters: Record<string, string> = {}
   ): Observable<Observation[]> {
     const url = `${this.baseUrl}/datasets/${datasetId}/editions/${edition}/versions/${version}/observations`;
-    
-    let params = new HttpParams().set('time', '*');
-    
+
+    // Set all required dimensions for retail-sales-index
+    let params = new HttpParams()
+      .set('time', '*')
+      .set('geography', 'K03000001')  // Correct Great Britain code
+      .set('prices', 'chained-volume-of-retail-sales')
+      .set('seasonaladjustment', 'seasonal-adjustment')
+      .set('unofficialstandardindustrialclassification', 'all-retailing-including-automotive-fuel');
+
+    // Apply any filter overrides
     Object.keys(filters).forEach(key => {
-      if (key !== 'time') {
-        params = params.set(key, filters[key]);
-      }
+      params = params.set(key, filters[key]);
     });
 
     return this.http.get<any>(url, { params }).pipe(
@@ -138,7 +143,6 @@ export class OnsApiService {
 
   /**
    * Complete workflow: Get dataset metadata, latest version, and observations
-   * Falls back to mock data if API is unavailable
    */
   getDatasetWithObservations(
     datasetId: string,
@@ -180,30 +184,22 @@ export class OnsApiService {
                       observer.complete();
                     },
                     error: (err) => {
-                      // Fallback to mock data on error
-                      observer.next(this.getMockData(datasetId));
-                      observer.complete();
+                      observer.error(err);
                     }
                   });
                 },
                 error: (err) => {
-                  // Fallback to mock data on error
-                  observer.next(this.getMockData(datasetId));
-                  observer.complete();
+                  observer.error(err);
                 }
               });
             },
             error: (err) => {
-              // Fallback to mock data on error
-              observer.next(this.getMockData(datasetId));
-              observer.complete();
+              observer.error(err);
             }
           });
         },
         error: (err) => {
-          // Fallback to mock data on error
-          observer.next(this.getMockData(datasetId));
-          observer.complete();
+          observer.error(err);
         }
       });
     });
@@ -213,26 +209,45 @@ export class OnsApiService {
    * Parse observations from API response
    */
   private parseObservations(response: any): Observation[] {
-    if (!response.observations) {
+    if (!response.observations || !Array.isArray(response.observations)) {
+      console.warn('No observations array in response:', response);
       return [];
     }
 
-    return response.observations.map((obs: any) => {
-      const dimensions: Record<string, string> = {};
-      
-      // Extract dimension values from observation
-      Object.keys(obs).forEach(key => {
-        if (key !== 'observation' && key !== 'observationStatus') {
-          dimensions[key] = obs[key];
-        }
-      });
+    return response.observations
+      .filter((obs: any) => {
+        // Filter out observations with no data (empty observation field)
+        return obs.observation && obs.observation !== '';
+      })
+      .map((obs: any) => {
+        const dimensions: Record<string, string> = {};
 
-      return {
-        time: obs.time || obs.Time || '',
-        value: parseFloat(obs.observation || obs.value || '0'),
-        dimensions
-      };
-    });
+        // Extract time from dimensions.Time object
+        const timeId = obs.dimensions?.Time?.id || obs.dimensions?.Time?.label || '';
+
+        // Extract other dimensions
+        if (obs.dimensions) {
+          Object.keys(obs.dimensions).forEach(key => {
+            if (key === 'Time') {
+              dimensions.time = timeId;
+            } else if (typeof obs.dimensions[key] === 'object' && obs.dimensions[key].id) {
+              dimensions[key] = obs.dimensions[key].id;
+            } else {
+              dimensions[key] = obs.dimensions[key];
+            }
+          });
+        }
+
+        return {
+          time: timeId,
+          value: parseFloat(obs.observation || '0'),
+          dimensions
+        };
+      })
+      .sort((a, b) => {
+        // Sort by time period (MMM-YY format)
+        return a.time.localeCompare(b.time);
+      });
   }
 
   /**
@@ -253,6 +268,16 @@ export class OnsApiService {
   formatTimePeriod(apiLabel: string): string {
     if (!apiLabel) return '';
 
+    // Pattern: MMM-YY (e.g., "Jan-24", "Aug-89")
+    const shortMatch = apiLabel.match(/^([A-Za-z]{3})-(\d{2})$/);
+    if (shortMatch) {
+      const month = shortMatch[1];
+      const year = parseInt(shortMatch[2], 10);
+      // Determine century: 89-99 = 1900s, 00-88 = 2000s
+      const fullYear = year >= 89 ? `19${shortMatch[2]}` : `20${shortMatch[2]}`;
+      return `${month} ${fullYear}`;
+    }
+
     // Pattern: YYYY-MM
     const yearMonthMatch = apiLabel.match(/^(\d{4})-(\d{2})$/);
     if (yearMonthMatch) {
@@ -261,12 +286,6 @@ export class OnsApiService {
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       return `${months[month - 1]} ${year}`;
-    }
-
-    // Pattern: MMM-YY
-    const shortMatch = apiLabel.match(/^([A-Za-z]{3})-(\d{2})$/);
-    if (shortMatch) {
-      return `${shortMatch[1]} 20${shortMatch[2]}`;
     }
 
     return apiLabel;

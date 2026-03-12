@@ -72,9 +72,11 @@ export class TrendChartComponent implements OnChanges, AfterViewInit, OnDestroy 
     if (!this.chart || !this.data || this.data.length === 0) return;
 
     // Sort data by time
-    const sortedData = this.data.slice().sort((a, b) =>
-      new Date(a.time).getTime() - new Date(b.time).getTime()
-    );
+    const sortedData = this.data.slice().sort((a, b) => {
+      const dateA = this.parseTimeString(a.time);
+      const dateB = this.parseTimeString(b.time);
+      return dateA.getTime() - dateB.getTime();
+    });
 
     const timeLabels = sortedData.map(d => this.onsApi.formatTimePeriod(d.time));
     const values = sortedData.map(d => d.value);
@@ -142,6 +144,23 @@ export class TrendChartComponent implements OnChanges, AfterViewInit, OnDestroy 
     };
 
     this.chart.setOption(option);
+  }
+
+  private parseTimeString(timeStr: string): Date {
+    // Parse MMM-YY format (e.g., "Jan-24", "Aug-89")
+    const match = timeStr.match(/^([A-Za-z]{3})-(\d{2})$/);
+    if (match) {
+      const months: Record<string, number> = {
+        'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+        'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+      };
+      const month = months[match[1]] || 0;
+      const year = parseInt(match[2], 10);
+      const fullYear = year >= 89 ? 1900 + year : 2000 + year;
+      return new Date(fullYear, month, 1);
+    }
+    // Fallback to standard date parsing
+    return new Date(timeStr);
   }
 
   onDimensionChange(dimensionName: string, event: any): void {

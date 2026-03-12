@@ -29,26 +29,25 @@ export class AnalyticsComponent implements OnInit {
     this.usingMockData = false;
 
     try {
-      // Fetch retail sales index (main dataset)
+      // Fetch retail sales index (main dataset) - geography is already set in service
       this.retailSalesData = await this.onsApi.getDatasetWithObservations(
         'retail-sales-index',
-        { geography: 'K02000001' }
+        {}
       ).toPromise() as DatasetWithObservations;
+
+      console.log('Retail sales data loaded:', this.retailSalesData);
 
       // Fetch all businesses data
       this.allBusinessesData = await this.onsApi.getDatasetWithObservations(
         'retail-sales-index-all-businesses',
-        { geography: 'K02000001' }
+        {}
       ).toPromise() as DatasetWithObservations;
 
       // Fetch large vs small businesses data
       this.largeSmallData = await this.onsApi.getDatasetWithObservations(
         'retail-sales-index-large-and-small-businesses',
-        { geography: 'K02000001' }
+        {}
       ).toPromise() as DatasetWithObservations;
-
-      // Check if we're using mock data (simplified check)
-      this.usingMockData = this.retailSalesData?.versionInfo?.version === 1;
 
       this.loading = false;
     } catch (err: any) {
